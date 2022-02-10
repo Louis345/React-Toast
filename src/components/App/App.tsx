@@ -1,18 +1,14 @@
 import React from 'react';
-import { useRef, useState } from 'react';
+import {useState } from 'react';
 import { ToastPortal } from '../ToastPortal/ToastPortal';
 import styles from './styles.module.css';
 
 export const App = () => {
-  const toastRef = useRef();
   const [text, setText] = useState('');
-  const [mode, setMode] = useState('info');
+  const [mode, setMode] = useState('');
   const [position, setPosition] = useState(null);
   const [autoClose, setAutoClose] = useState(false);
-
-  const addToast = () => {
-    toastRef.current.addMessage({ mode, message: text })
-  }
+  const [toastMessage,setToastMessage] = useState<{mode:string,message:string}>({mode:'',message:''});
 
 
   return (
@@ -27,10 +23,7 @@ export const App = () => {
         <form
           onSubmit={e => {
             e.preventDefault();
-            if (text) {
-              addToast();
-              setText('')
-            }
+            setToastMessage({ mode, message: text }) 
           }}
         >
           <div className={styles.autoClose}>
@@ -62,10 +55,10 @@ export const App = () => {
             onChange={e => setText(e.target.value)}
           />
 
-          <button>Submit</button>
+          <button type="submit">Submit</button>
         </form>
       </div>
-      <ToastPortal ref={toastRef}  autoClose={autoClose}  autoCloseTime={5000} position={position}  message="test" />
+      <ToastPortal autoClose={autoClose}  autoCloseTime={5000} position={position}  message={toastMessage} />
     </div>
   );
 };

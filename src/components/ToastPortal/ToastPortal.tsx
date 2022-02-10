@@ -1,4 +1,4 @@
-import React, { useState, useEffect, forwardRef, useImperativeHandle, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useToastPortal } from '../../hooks/useToastPortal';
 import ReactDOM from 'react-dom';
 import styles from './styles.module.css';
@@ -7,18 +7,21 @@ import { uuid } from '../../shared/helpers';
 
 
 interface ToastPortalProps {
- autoClose: boolean;
-  autoCloseTime: number;
-  position: 'topRight' | 'topLeft' | 'center';
-  ref: React.Ref<any>;
-  message: string;
+ autoClose: boolean,
+  autoCloseTime: number,
+  position: 'topRight' | 'topLeft' | 'center',
+  message: { mode:string, message: string }
 }
 
 
-export const ToastPortal:React.FC<ToastPortalProps> = forwardRef(({ autoClose, autoCloseTime,position }, ref) => {
+export const ToastPortal:React.FC<ToastPortalProps> = ({ autoClose, autoCloseTime,position ,message}) => {
     const [toasts, setToasts] = useState([]);
 
-    
+    useEffect(()=>{
+        if(message.message.length > 0){
+        addMessage(message);
+        }
+    },[message.message])
 
 
     const removeToast = (id) => {
@@ -39,24 +42,20 @@ export const ToastPortal:React.FC<ToastPortalProps> = forwardRef(({ autoClose, a
         
     }, [toasts, autoClose, autoCloseTime])
 
-    const addMessage = (toast) => {
-        if (toast) {
+    const addMessage = (toast:{}) => {
+        if (Object.keys(toast).length > 1) {
+            console.log({toasts})
             setToasts([...toasts, { ...toast, id: uuid() }]);
         }
 
     }
 
-    useImperativeHandle(ref, () => ({
-        addMessage(toast) {
-            addMessage(toast);
-            setToasts([...toasts, { ...toast, id: uuid() }]);
-        }
-    }));
+  
    
     const { loaded, portalId } = useToastPortal(position);
     return loaded ? ReactDOM.createPortal(
         <div className={styles.toastContainer}>
-            {toasts.map(toast => (
+            {toasts.length > 0 && toasts.map(toast => (
                 <Toast
                     key={toast.id}
                     message={toast.message}
@@ -69,5 +68,5 @@ export const ToastPortal:React.FC<ToastPortalProps> = forwardRef(({ autoClose, a
     ) : (
         <div>Loading</div>
     );
-});
+};
 
