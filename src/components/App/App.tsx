@@ -15,11 +15,11 @@ export const App = () => {
 
   return (
     <div className={styles.main}>
-      <h1>Portals and Toast</h1>
+      <h1>Toastie Component</h1>
       <div className={styles.content}>
         <img
           alt="toaster"
-          src="/assets/toaster.svg"
+          src="/assets/toastie.svg"
           className={styles.toaster}
         />
         <form
@@ -32,7 +32,6 @@ export const App = () => {
           <div className={styles.autoClose}>
             <input
               type="checkbox"
-              value={autoClose}
               onChange={(e) => setAutoClose(e.target.checked)}
             />
             <label>Auto Close</label>

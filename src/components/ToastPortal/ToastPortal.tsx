@@ -13,6 +13,11 @@ interface ToastPortalProps {
   toastStyles?: { [key: string]: string };
 }
 
+type ToastPortalState = {
+  message: string;
+  mode: "success" | "error" | "info";
+  id: string;
+}[];
 export const ToastPortal: React.FC<ToastPortalProps> = ({
   autoClose,
   autoCloseTime,
@@ -21,7 +26,7 @@ export const ToastPortal: React.FC<ToastPortalProps> = ({
   toastStyles,
   children,
 }) => {
-  const [toasts, setToasts] = useState([]);
+  const [toasts, setToasts] = useState<ToastPortalState>([]);
 
   useEffect(() => {
     if (message.message.length > 0) {
@@ -46,7 +51,7 @@ export const ToastPortal: React.FC<ToastPortalProps> = ({
     }
   }, [toasts, autoClose, autoCloseTime]);
 
-  const addMessage = (toast: {}) => {
+  const addMessage = (toast: any) => {
     if (Object.keys(toast).length > 1) {
       setToasts([...toasts, { ...toast, id: uuid() }]);
     }
